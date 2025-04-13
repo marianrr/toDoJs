@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo app</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+    <style>
+        *,
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 30px;
+        }
+
+        body {
+            background-color: aquamarine;
+            text-align: center;
+        }
+
+        .container {
+            width: 60lvw;
+            margin: auto;
+        }
+
+        .container2 {
+            display: flex;
+            align-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        input {
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: center;
+
+        }
+
+        input[type="submit"] {
+            width: 200px;
+        }
+
+        p {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .material-symbols-outlined {
+            font-size: 30px;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: solid 2px green;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            padding-left: 10px;
+        }
+
+        .container2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li span {
+            flex-wrap: wrap;
+        }
+
+        .material-symbols-outlined:hover {
+            cursor: pointer;
+            color: red;
+        }
+
+        ol {
+            list-style-type: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <form action="" method="post" id="form1" name="form1" onsubmit="submit1(event)">
+
+            <label for="input1">Write new note</label>
+            <br>
+            <input type="text" name="input1" id="input1" placeholder="New note">
+            <br>
+            <input type="submit" value="Submit">
+
+        </form>
+
+        <p>Notes are: </p>
+
+        <ol id="ol1">
+
+        </ol>
+
+
+
+    </div>
+
+    <form action="" method="post" id="form2" name="form2" onsubmit="submit2(event)">
+
+        <label for="input2">Edit note</label>
+        <br>
+        <input type="text" name="input2" id="input2">
+        <br>
+        <input type="submit" value="Save">
+
+    </form>
+
+
+    <script>
+        window.input1.focus()
+        let i = localStorage.getItem('i')
+        if (i === null) {
+            i = 0
+            localStorage.setItem('i', i)
+        }
+        window.form2.style.display = 'none'
+
+        let notes = JSON.parse(localStorage.getItem("notes"))
+        if (notes) {
+
+            window.ol1.replaceChildren()
+            notes.map(note => {
+                let li1 = document.createElement('li')
+                li1.innerHTML = note.name + `<div class='container2'><span class="material-symbols-outlined" onclick="edit1(event, ${note.id})">
+                    edit_square
+                </span>` + `<span class="material-symbols-outlined" onclick="delete1(event, ${note.id})">
+                        delete
+                    </span></div>`
+                window.ol1.appendChild(li1)
+            })
+        }
+
+        const edit1 = (event, id) => {
+            notes = JSON.parse(localStorage.getItem("notes"))
+            document.getElementsByClassName('container')[0].style.display = 'none'
+            window.form2.style.display = 'revert'
+            window.input2.focus()
+            let note = notes.find(note => note.id === id)
+            window.input2.value = note.name
+
+            localStorage.setItem('id', id)
+        }
+
+        const delete1 = (event, id) => {
+            notes = JSON.parse(localStorage.getItem("notes"))
+            event.target.parentElement.parentElement.remove()
+
+            notes = notes.filter(note => note.id !== id)
+            localStorage.setItem('notes', JSON.stringify(notes))
+        }
+
+        const submit1 = event => {
+            window.input1.focus()
+            event.preventDefault()
+            if (!window.input1.value) return
+            let notes = JSON.parse(localStorage.getItem("notes"))
+            if (notes) {
+                let note = {
+                    name: window.input1.value,
+                    id: ++i
+                }
+                notes.push(note)
+                localStorage.setItem('notes', JSON.stringify(notes))
+                window.ol1.replaceChildren()
+                notes.map(note => {
+                    let li1 = document.createElement('li')
+                    li1.innerHTML = note.name + `<div class='container2'><span class="material-symbols-outlined" onclick="edit1(event, ${note.id})">
+                        edit_square
+                    </span>` + `<span class="material-symbols-outlined" onclick="delete1(event, ${note.id})">
+                            delete
+                        </span></div>`
+                    window.ol1.appendChild(li1)
+                    window.input1.value = ""
+                })
+                localStorage.setItem('i', i)
+            }
+            else {
+                let notes = []
+                let note = {
+                    name: window.input1.value,
+                    id: ++i
+                }
+                notes.push(note)
+                window.ol1.replaceChildren()
+                notes.map(note => {
+                    let li1 = document.createElement('li')
+                    li1.innerHTML = note.name + `<div class='container2'><span class="material-symbols-outlined" onclick="edit1(event, ${note.id})">
+                        edit_square
+                    </span>` + `<span class="material-symbols-outlined" onclick="delete1(event,  ${note.id})">
+                            delete
+                        </span></div>`
+                    window.ol1.appendChild(li1)
+                })
+                localStorage.setItem('notes', JSON.stringify(notes))
+                localStorage.setItem('i', i)
+                window.input1.value = ""
+
+            }
+        }
+
+        const submit2 = event => {
+
+            notes = JSON.parse(localStorage.getItem("notes"))
+            event.preventDefault()
+            let id2 = Number(localStorage.getItem('id'))
+            let noteEdit = {
+                name: window.input2.value,
+                id: id2
+            }
+
+            notes = notes.map(note => {
+                if (note.id === id2) {
+                    note = noteEdit
+                    return note
+                }
+                return note
+            })
+
+            localStorage.setItem('notes', JSON.stringify(notes))
+
+            window.ol1.replaceChildren()
+            notes.map(note => {
+                let li1 = document.createElement('li')
+                li1.innerHTML = note.name + `<div class='container2'><span class="material-symbols-outlined" onclick="edit1(event, ${note.id})">
+                        edit_square
+                    </span>` + `<span class="material-symbols-outlined" onclick="delete1(event, ${note.id})">
+                            delete
+                        </span></div>`
+                window.ol1.appendChild(li1)
+                window.input1.value = ""
+            })
+            localStorage.setItem('i', i)
+
+            document.getElementsByClassName('container')[0].style.display = 'revert'
+            window.form2.style.display = 'none'
+            window.input1.focus()
+        }
+
+    </script>
+
+</body>
+
+</html>
