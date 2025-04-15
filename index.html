@@ -15,16 +15,21 @@
             padding: 0;
             box-sizing: border-box;
             font-size: 30px;
+            
         }
 
         body {
             background-color: aquamarine;
             text-align: center;
+            width: 100lvw;
+            height: 100lvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
             width: 60lvw;
-            margin: auto;
         }
 
         .container2 {
@@ -85,6 +90,24 @@
         ol {
             list-style-type: none;
         }
+
+
+        @media (max-width: 500px) {
+
+            input {
+                width: 60lvw;
+            }
+
+            input[type="submit"] {
+            width: 40lvw;
+        }
+        }
+
+
+
+
+
+
     </style>
 
 </head>
