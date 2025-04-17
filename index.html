@@ -24,7 +24,7 @@
             width: 100lvw;
             height: 100lvh;
             display: flex;
-            align-items: center;
+            /* align-items: center; */
             justify-content: center;
         }
 
@@ -94,8 +94,13 @@
 
         @media (max-width: 500px) {
 
+            body {
+                height: 100svh;
+            }
+
             input {
                 width: 60lvw;
+                
             }
 
             input[type="submit"] {
